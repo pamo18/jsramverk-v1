@@ -1,0 +1,200 @@
+html {
+    background-color: black;
+    overflow-y: scroll;
+}
+
+body {
+    margin: 8px auto;
+    padding: 8px;
+    width: 980px;
+    background-color: #ebe5d5;
+    border-radius: 10px;
+}
+
+main {
+    min-height: 50em;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+article {
+    overflow: auto;
+    font-family: Helvetica;
+    font-size: 1.1em;
+}
+
+h1 {
+    font-size: 2em;
+    text-align: center;
+}
+
+.site-header {
+    position: relative;
+    background-color: #90866e;
+    overflow: auto; /* clear fix to make div span all elements */
+    font-family: Helvetica;
+}
+
+.site-header img {
+    float: left;
+}
+
+.site-title {
+    display: block;
+    padding-top: 1em;
+    padding-left: 50px;
+    font-size: 2.5em;
+    overflow: auto;
+}
+
+.logo {
+    width: 120px;
+    padding: 1em;
+    border-radius: 40px;
+}
+
+.navbar_main {
+    margin-top: 1.5em;
+    border-top: 1px solid black;
+}
+
+.navbar_main.under {
+    border-top: none;
+    border-bottom: 1px solid black;
+}
+
+.navbar_main.under a {
+    width: 100px;
+    font-size: 1em;
+    padding: 0.5em 0.5em;
+}
+
+.navbar_main .selected {
+    color: white;
+    background-color: #282828;
+}
+
+.navbar_main ul {
+    padding: 0;
+    text-align: center;
+}
+
+.navbar_main li {
+    display: inline-block;
+    text-decoration: none;
+    margin-right: 0.3em;
+}
+
+.navbar_main a {
+    display: inline-block;
+    font-size: 18px;
+    width: 130px;
+    text-decoration: none;
+    padding: 0.5em 1em;
+    border: 1px solid black;
+    background-color: #eee;
+    color: black;
+}
+
+.navbar_main a:not(.selected):hover {
+    background-color: #ccc;
+    color: black;
+}
+
+.me {
+    width: 40%;
+    margin-top: 2em;
+    border-radius: 20px;
+    padding-left: 1em;
+    padding-bottom: 0.5em;
+    padding-right: 0.5em;
+    float: right;
+}
+
+.Manchester {
+    width: 100%;
+    border-radius: 20px;
+}
+
+.backdrop {
+    text-align: right;
+    font-size: 0.8em;
+    font-style: italic;
+}
+
+#site-footer {
+    overflow: auto;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    font-size: 1.1em;
+    text-align: center;
+    padding-left: 1em;
+    padding-right: 1em;
+    font-family: Helvetica;
+}
+
+.me-tag {
+    padding: 0.5em;
+    height: 100px;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 15px;
+}
+
+.me-tag img {
+    float: left;
+    height: 100%;
+}
+
+.me-tag p {
+    float: left;
+    height: 100%;
+    max-width: 180px;
+    margin: 0;
+    margin-left: 0.5em;
+    font-style: italic;
+    font-size: 0.9em;
+    text-align: left;
+}
+
+@media (max-width: 980px) {
+    body {
+        width: auto;
+    }
+}
+
+@media (max-width: 850px) {
+    .logo {
+        width: 80px;
+    }
+
+    .site-title {
+        padding-left: 10px;
+        font-size: 1.5em;
+    }
+
+    .title {
+        text-align: left;
+    }
+}
+
+@media (max-width: 500px) {
+    .site-title {
+        padding-top: 1em;
+        font-size: 1.3em;
+    }
+
+    .navbar_main li {
+        display: block;
+    }
+
+    .navbar_main a {
+        margin: 0 auto;
+        display: block;
+        text-align: center;
+        width: 50%;
+        font-size: 1.5em;
+        padding: 2px;
+    }
+
+}
