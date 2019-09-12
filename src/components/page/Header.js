@@ -41,6 +41,8 @@ class Header extends Component {
                     <ul>
                         <li><NavLink to="/" activeClassName="selected" isActive={checkActive}>Me</NavLink ></li>
                         <li><NavLink to={{pathname: "/reports/week/1", state: { kmom: "1" }}} activeClassName="selected" isActive={checkActiveReport}>Redovisning</NavLink></li>
+                        <li><NavLink to="/register" activeClassName="selected">Register</NavLink ></li>
+                        <li><NavLink to="/profile" activeClassName="selected">Profile</NavLink ></li>
                     </ul>
                 </nav>
             </header>

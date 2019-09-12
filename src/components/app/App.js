@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Header from '../page/Header.js';
 import Me from '../page/Me.js';
 import Report from '../page/Report.js';
+import Register from '../form/Register.js';
+import Profile from '../page/Profile.js';
 import Footer from '../page/Footer.js';
 
 import './App.css';
@@ -18,6 +20,8 @@ class App extends Component {
                       <main>
                           <Route exact path="/" component={Me} />
                           <Route path="/reports/week/:kmom" component={Report} />
+                          <Route exact path="/register" component={Register} />
+                          <Route exact path="/profile" component={Profile} />
                       </main>
                     </div>
                     <Footer />
