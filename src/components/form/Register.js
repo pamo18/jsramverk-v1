@@ -6,10 +6,14 @@ class Register extends Component {
     constructor(props) {
         super(props);
         this.registerSubmit = this.registerSubmit.bind(this);
+        this.onPasswordChange = this.onPasswordChange.bind(this);
+        this.toggleShowPassword = this.toggleShowPassword.bind(this);
         this.state = {
-            message: "",
-            password: 0,
-            showing: false
+            showing: false,
+            password: "",
+            hidden: true,
+            button: true,
+            strength: 0
         };
     }
     registerSubmit(event) {
@@ -71,7 +75,7 @@ class Register extends Component {
             let countries = common = JSON.parse(localStorage.getItem("common"));
              countries.forEach(function(country) {
                 common.push(
-                    <option value={country}>{country}</option>
+                    <option key={country} value={country}>{country}</option>
                 )
             });
         }
@@ -84,9 +88,19 @@ class Register extends Component {
         });
         return countries;
     }
-    onChange = e => this.setState({ [e.target.name]: utils.passwordChecker(e.target.value) })
-
-
+    onPasswordChange(e) {
+        this.setState({
+            strength: utils.passwordChecker(e.target.value),
+            password: e.target.value
+        });
+    }
+    toggleShowPassword(e) {
+        e.preventDefault();
+        this.setState({
+            hidden: !this.state.hidden,
+            button: !this.state.button
+        });
+    }
     render() {
         const { showing } = this.state;
         return (
@@ -122,11 +136,21 @@ class Register extends Component {
                         </label>
 
                         <label className="form-label">Password: 1 capital letter, 1 number, 4+ characters long.
-                            <input className="form-input" onChange={this.onChange} type="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{4,}" required placeholder="Your password" />
+                            <input
+                                className="form-input password"
+                                type={this.state.hidden ? "password" : "text"}
+                                name="password"
+                                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{4,}"
+                                value={this.state.password}
+                                placeholder="Your password"
+                                onChange={this.onPasswordChange}
+                                required
+                                />
+                            <button className="show-password" onClick={this.toggleShowPassword}>{this.state.button ? "Show" : "Hide"} password</button>
                         </label>
 
                         <label className="form-label">Password strength
-                            <meter className="form-meter" min="0" low="4" optimum="9" high="8" max="10" value={this.state.password}></meter>
+                            <meter className="form-meter" min="0" low="4" optimum="9" high="8" max="10" value={this.state.strength}></meter>
                         </label>
 
                         <label className="form-label check-label">
