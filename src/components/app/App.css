@@ -41,6 +41,12 @@ h1 {
     text-align: right;
 }
 
+.invalid {
+    color: red;
+    font-size: 1.25rem;
+    padding: 1rem;
+}
+
 .date-picker {
     width: 65%;
     min-height: 225px;

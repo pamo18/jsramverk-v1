@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import DatePicker from './DatePicker.js';
 import utils from '../../utils/utils.js';
+import base from '../../config/api.js';
+let api = base.api();
 
 class Register extends Component {
     constructor(props) {
@@ -8,7 +10,13 @@ class Register extends Component {
         this.registerSubmit = this.registerSubmit.bind(this);
         this.onPasswordChange = this.onPasswordChange.bind(this);
         this.toggleShowPassword = this.toggleShowPassword.bind(this);
+        this.getCountries = this.getCountries.bind(this);
+        this.commonCountries = this.commonCountries.bind(this);
+        this.addToCommon = this.addToCommon.bind(this);
         this.state = {
+            countries: "",
+            commonOptions: "",
+            commonCountries: "",
             showing: false,
             password: "",
             hidden: true,
@@ -16,77 +24,88 @@ class Register extends Component {
             strength: 0
         };
     }
+    componentDidMount() {
+        this.getCountries();
+        this.commonCountries();
+    }
     registerSubmit(event) {
-        // event.preventDefault();
+        const that = this;
+        event.preventDefault();
         const data = new FormData(event.target);
-        let name = data.get('name');
-        if (localStorage.getItem(name) === null) {
-            console.log("Setting up profile.")
-            let person = {
-                "Name": name,
-                "Birthday": data.get('date'),
-                "Country": data.get('country'),
-                "Email": data.get('email'),
-                "Password": data.get('password')
-            }
-            localStorage.setItem(name, JSON.stringify(person));
-            console.log(JSON.parse(localStorage.getItem(name)));
-        } else {
-            console.log("Profile already added!")
+        let person = {
+            "name": data.get('name'),
+            "birthday": data.get('date'),
+            "country": data.get('country'),
+            "email": data.get('email'),
+            "password": data.get('password')
         }
-        localStorage.setItem("user", name);
-        console.log(localStorage.getItem("user"));
-        fetch('/api/register', {
+        console.log(person);
+        fetch(api + "/register", {
             method: 'POST',
-            body: data,
+            body: JSON.stringify(person),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function() {
+            let common = {
+                "countries": that.state.commonCountries.join(",")
+            }
+            fetch(api + "/common", {
+                method: 'POST',
+                body: JSON.stringify(common),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(that.props.history.push('/login'));
         });
     }
     addToCommon(e) {
-        let common = [];
+        let common = this.state.commonCountries;
         let country = e.target.value;
-
-        if (localStorage.getItem("common") === null) {
-            console.log("Setting up localstorage.")
-            localStorage.setItem("common", "");
-        } else {
-            console.log("Localstorage ready!")
-        }
-
-        if (localStorage.getItem("common")) {
-            common = JSON.parse(localStorage.getItem("common"));
-        }
-
         if (common.includes(country)) {
-            console.log(country + " already exists.");
         } else {
             common.unshift(country);
             if (common.length > 3) {
                 common.pop();
             }
-            localStorage.setItem("common", JSON.stringify(common));
-            console.log(country + " added!");
-            console.log(localStorage.getItem("common"));
+            this.setState({
+                commonCountries: common
+            })
         }
-        // localStorage.clear();
     }
     commonCountries() {
-        let common = [];
-        if (localStorage.getItem("common")) {
-            let countries = common = JSON.parse(localStorage.getItem("common"));
-             countries.forEach(function(country) {
-                common.push(
-                    <option key={country} value={country}>{country}</option>
-                )
+        let commonOptions = [];
+        let commonCountries = [];
+        const that = this;
+        fetch(api + `/common`)
+        .then(res => res.json())
+        .then(function(res) {
+            let result = res.data.common.item;
+            result = result.split(",");
+            result.forEach(function (row) {
+                commonOptions.push(<option key={row} value={row.country}>{row}</option>);
+                commonCountries.push(row);
             });
-        }
-        return common;
-    };
+            that.setState({
+                commonOptions: commonOptions,
+                commonCountries: commonCountries
+            })
+        })
+    }
     getCountries() {
         let countries = [];
-        utils.countryList().forEach(function(country) {
-            countries.push(<option key={country} value={country}>{country}</option>);
-        });
-        return countries;
+        const that = this;
+        fetch(api + `/countries`)
+        .then(res => res.json())
+        .then(function(res) {
+            let result = res.data.countries;
+            result.forEach(function (row) {
+                countries.push(<option key={row.country} value={row.county}>{row.country}</option>);
+            });
+            that.setState({
+                countries: countries
+            })
+        })
     }
     onPasswordChange(e) {
         this.setState({
@@ -95,7 +114,6 @@ class Register extends Component {
         });
     }
     toggleShowPassword(e) {
-        e.preventDefault();
         this.setState({
             hidden: !this.state.hidden,
             button: !this.state.button
@@ -107,7 +125,7 @@ class Register extends Component {
             <div className="form-wrapper">
                 <h1>Registration</h1>
                 <p className="center">To be able to view your profile you must first register.</p>
-                <form action="/profile" className="form-register" onSubmit={this.registerSubmit}>
+                <form action="/login" className="form-register" onSubmit={this.registerSubmit}>
                         <label className="form-label">Name
                             <input className="form-input" type="text" name="name" required placeholder="Your name" />
                         </label>
@@ -123,10 +141,10 @@ class Register extends Component {
                         <label className="form-label">Country
                             <select onChange={this.addToCommon} className="form-input" type="text" name="country" required placeholder="Your current location">
                                 <optgroup label="Common countries">
-                                    { this.commonCountries() }
+                                    { this.state.commonOptions }
                                 </optgroup>
                                 <optgroup label="Other countries">
-                                    { this.getCountries() }
+                                    { this.state.countries }
                                 </optgroup>
                             </select>
                         </label>
@@ -146,7 +164,7 @@ class Register extends Component {
                                 onChange={this.onPasswordChange}
                                 required
                                 />
-                            <button className="show-password" onClick={this.toggleShowPassword}>{this.state.button ? "Show" : "Hide"} password</button>
+                            <p><input type="checkbox" className="show-password" onClick={this.toggleShowPassword} /> {this.state.button ? "Show" : "Hide"} password</p>
                         </label>
 
                         <label className="form-label">Password strength

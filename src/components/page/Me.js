@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import meImage from '../../assets/img/Paul-Moreland-2.jpg';
 import meBackdrop from '../../assets/img/Manchester.jpg';
+import base from '../../config/api.js';
+let api = base.api();
 
-const json = require('../../assets/json/me.json');
 
 class Me extends Component {
     constructor(props) {
@@ -15,11 +16,18 @@ class Me extends Component {
     }
 
     componentDidMount() {
-        let meText = json[0];
+        fetch(api)
+        .then(res => res.json())
+        .then(res => this.showContent(res))
+    };
+
+    showContent(res) {
+        console.log(res);
+        let data = res.data.me[0];
         this.setState({
-            para1: meText.para1,
-            para2: meText.para2,
-            para3: meText.para3
+            para1: data.para1,
+            para2: data.para2,
+            para3: data.para3
         });
     }
 
