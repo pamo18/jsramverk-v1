@@ -162,16 +162,16 @@ test.describe("Me-Sida", function() {
             assert.ok(url.endsWith("/profile"));
         });
 
-        browser.findElement(By.name("logoff")).then(function(element) {
-            element.click();
-        });
-
-        // Check correct heading
-        browser.findElement(By.css("h1")).then(function(element) {
-            element.getText().then(function(text) {
-                assert.equal(text, "Login");
-            });
-        });
+        // browser.findElement(By.name("logoff")).then(function(element) {
+        //     element.click();
+        // });
+        //
+        // // Check correct heading
+        // browser.findElement(By.css("h1")).then(function(element) {
+        //     element.getText().then(function(text) {
+        //         assert.equal(text, "Login");
+        //     });
+        // });
 
         done();
     });
