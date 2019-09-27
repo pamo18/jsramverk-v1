@@ -3,7 +3,9 @@ language: node_js
 node_js:
     - "stable"
 
-sudo: false
+dist: xenial
+
+sudo: required
 
 git:
     submodules: false
