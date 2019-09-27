@@ -21,7 +21,7 @@ let browser;
 test.describe("Me-Sida", function() {
 
     test.beforeEach(function(done) {
-        this.timeout(100000);
+        this.timeout(20000);
         browser = new webdriver.Builder().
             withCapabilities(webdriver.Capabilities.firefox()).build();
 
@@ -55,8 +55,6 @@ test.describe("Me-Sida", function() {
 
         done();
     });
-
-
 
     test.it("Test go to redovisning", function(done) {
         // Use nav link to go to home page
@@ -143,6 +141,8 @@ test.describe("Me-Sida", function() {
             element.click();
         });
 
+        browser.sleep(2000);
+
         // Check correct heading
         browser.findElement(By.css("h1")).then(function(element) {
             element.getText().then(function(text) {
@@ -162,16 +162,16 @@ test.describe("Me-Sida", function() {
             assert.ok(url.endsWith("/profile"));
         });
 
-        // browser.findElement(By.name("logoff")).then(function(element) {
-        //     element.click();
-        // });
-        //
-        // // Check correct heading
-        // browser.findElement(By.css("h1")).then(function(element) {
-        //     element.getText().then(function(text) {
-        //         assert.equal(text, "Login");
-        //     });
-        // });
+        browser.findElement(By.name("logoff")).then(function(element) {
+            element.click();
+        });
+
+        // Check correct heading
+        browser.findElement(By.css("h1")).then(function(element) {
+            element.getText().then(function(text) {
+                assert.equal(text, "Login");
+            });
+        });
 
         done();
     });
