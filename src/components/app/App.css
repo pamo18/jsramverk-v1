@@ -28,6 +28,12 @@ h1 {
     text-align: center;
 }
 
+pre {
+    background-color: #2f3336;
+    color: white;
+    padding: 1em;
+}
+
 .center {
     margin: 0 auto;
     text-align: center;
