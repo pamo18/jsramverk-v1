@@ -1,37 +1,28 @@
 language: node_js
 
 node_js:
-    - "stable"
-
-dist: xenial
+    - '10'
 
 sudo: required
-
-git:
-    submodules: false
-
-before_script:
-    - npm install
-
-script:
-    - npm test
-
-before_install:
-    - sudo apt-get update
-    - "export DISPLAY=:99.0"
-    - wget https://github.com/mozilla/geckodriver/releases/download/v0.20.1/geckodriver-v0.20.1-linux64.tar.gz
-    - tar -xzf geckodriver-v0.20.1-linux64.tar.gz
-    - sudo cp geckodriver /usr/bin
-
-env:
-  global:
-    - MOZ_HEADLESS=1
-addons:
-  firefox: latest
 
 services:
   - xvfb
 
-# after_success:
-#     - npm run report-coveralls
-#     - npm run report-codecov
+env:
+  global:
+    - MOZ_HEADLESS=1
+
+addons:
+  firefox: latest
+
+before_install:
+  - sudo apt-get update
+  - wget https://github.com/mozilla/geckodriver/releases/download/v0.20.1/geckodriver-v0.20.1-linux64.tar.gz
+  - tar -xzf geckodriver-v0.20.1-linux64.tar.gz
+  - sudo cp geckodriver /usr/bin
+
+before_script:
+  - npm install
+
+script:
+  - npm test
