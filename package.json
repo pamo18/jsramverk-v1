@@ -12,7 +12,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "mocha test/**/*.js",
+    "test": "mocha test/**/*.js --timeout 10000",
     "posttest": "npm run eslint",
     "eject": "react-scripts eject",
     "deploy": "npm run build && rsync -av build/* pamo18@pamo18.me:/var/www/pamo18.me/html/",
