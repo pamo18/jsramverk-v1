@@ -18,10 +18,10 @@ class App extends Component {
         super(props);
         this.state = {
             activeUser: ""
-        }
+        };
     }
     componentDidMount() {
-        this.checkLogin()
+        this.checkLogin();
     }
     checkLogin() {
         if (localStorage.getItem("activeUser") === null) {
@@ -30,13 +30,13 @@ class App extends Component {
             console.log("Logged in");
             this.setState({
                 activeUser: [
-                    <div>
+                    <div key="router">
                         <Route exact path="/reports/create" component={Create} />
                         <Route exact path="/reports/edit" component={Edit} />
                         <Route exact path="/reports/edit/:id" component={Edit} />
                     </div>
                 ]
-            })
+            });
         }
     }
     render() {
@@ -45,14 +45,14 @@ class App extends Component {
                 <div className="App">
                     <Header />
                     <div className="wrap-main">
-                      <main>
-                          <Route exact path="/" component={Me} />
-                          <Route path="/reports/week/:kmom" component={Report} />
-                          <Route exact path="/login" component={Login} />
-                          <Route exact path="/register" component={Register} />
-                          <Route exact path="/profile" component={Profile} />
-                          { this.state.activeUser }
-                      </main>
+                        <main>
+                            <Route exact path="/" component={Me} />
+                            <Route path="/reports/week/:kmom" component={Report} />
+                            <Route exact path="/login" component={Login} />
+                            <Route exact path="/register" component={Register} />
+                            <Route exact path="/profile" component={Profile} />
+                            { this.state.activeUser }
+                        </main>
                     </div>
                     <Footer />
                 </div>

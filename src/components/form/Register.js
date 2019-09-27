@@ -1,3 +1,5 @@
+/*eslint max-len: ["error", { "code": 200 }]*/
+
 import React, { Component } from 'react';
 import DatePicker from './DatePicker.js';
 import utils from '../../utils/utils.js';
@@ -30,16 +32,19 @@ class Register extends Component {
     }
     registerSubmit(event) {
         const that = this;
+
         event.preventDefault();
         const data = new FormData(event.target);
+
         let person = {
             "name": data.get('name'),
             "birthday": data.get('date'),
             "country": data.get('country'),
             "email": data.get('email'),
             "password": data.get('password')
-        }
-        console.log(person);
+        };
+
+
         fetch(api + "/register", {
             method: 'POST',
             body: JSON.stringify(person),
@@ -49,8 +54,9 @@ class Register extends Component {
         }).then(function() {
             let common = {
                 "countries": that.state.commonCountries.join(",")
-            }
-            fetch(api + "/common", {
+            };
+
+            fetch(api + "/common/countries", {
                 method: 'POST',
                 body: JSON.stringify(common),
                 headers: {
@@ -60,52 +66,58 @@ class Register extends Component {
         });
     }
     addToCommon(e) {
-        let common = this.state.commonCountries;
-        let country = e.target.value;
+        let common = this.state.commonCountries,
+            country = e.target.value;
+
         if (common.includes(country)) {
-        } else {
             common.unshift(country);
             if (common.length > 3) {
                 common.pop();
             }
             this.setState({
                 commonCountries: common
-            })
+            });
         }
     }
     commonCountries() {
-        let commonOptions = [];
-        let commonCountries = [];
+        let commonOptions = [],
+            commonCountries = [];
+
         const that = this;
-        fetch(api + `/common`)
-        .then(res => res.json())
-        .then(function(res) {
-            let result = res.data.common.item;
-            result = result.split(",");
-            result.forEach(function (row) {
-                commonOptions.push(<option key={row} value={row.country}>{row}</option>);
-                commonCountries.push(row);
+
+        fetch(api + `/common/countries`)
+            .then(res => res.json())
+            .then(function(res) {
+                let result = res.data.common.item;
+
+                result = result.split(",");
+                result.forEach(function (row) {
+                    commonOptions.push(<option key={row} value={row.country}>{row}</option>);
+                    commonCountries.push(row);
+                });
+                that.setState({
+                    commonOptions: commonOptions,
+                    commonCountries: commonCountries
+                });
             });
-            that.setState({
-                commonOptions: commonOptions,
-                commonCountries: commonCountries
-            })
-        })
     }
     getCountries() {
         let countries = [];
+
         const that = this;
+
         fetch(api + `/countries`)
-        .then(res => res.json())
-        .then(function(res) {
-            let result = res.data.countries;
-            result.forEach(function (row) {
-                countries.push(<option key={row.country} value={row.county}>{row.country}</option>);
+            .then(res => res.json())
+            .then(function(res) {
+                let result = res.data.countries;
+
+                result.forEach(function (row) {
+                    countries.push(<option key={row.country} value={row.county}>{row.country}</option>);
+                });
+                that.setState({
+                    countries: countries
+                });
             });
-            that.setState({
-                countries: countries
-            })
-        })
     }
     onPasswordChange(e) {
         this.setState({
@@ -113,7 +125,7 @@ class Register extends Component {
             password: e.target.value
         });
     }
-    toggleShowPassword(e) {
+    toggleShowPassword() {
         this.setState({
             hidden: !this.state.hidden,
             button: !this.state.button
@@ -121,63 +133,64 @@ class Register extends Component {
     }
     render() {
         const { showing } = this.state;
+
         return (
             <div className="form-wrapper">
                 <h1>Registration</h1>
                 <p className="center">To be able to view your profile you must first register.</p>
                 <form action="/login" className="form-register" onSubmit={this.registerSubmit}>
-                        <label className="form-label">Name
-                            <input className="form-input" type="text" name="name" required placeholder="Your name" />
-                        </label>
+                    <label className="form-label">Name
+                        <input className="form-input" type="text" name="name" required placeholder="Your name" />
+                    </label>
 
-                        <label className="form-label">Birthday
-                            <input onClick={() => this.setState({ showing: !showing })} id="birthday" className="form-input" type="date" name="date" required placeholder="Click to choose!" />
-                            { showing
-                                ? <DatePicker />
-                                : null
-                            }
-                        </label>
+                    <label className="form-label">Birthday
+                        <input onClick={() => this.setState({ showing: !showing })} id="birthday" className="form-input" type="date" name="date" required placeholder="Click to choose!" />
+                        { showing
+                            ? <DatePicker />
+                            : null
+                        }
+                    </label>
 
-                        <label className="form-label">Country
-                            <select onChange={this.addToCommon} className="form-input" type="text" name="country" required placeholder="Your current location">
-                                <optgroup label="Common countries">
-                                    { this.state.commonOptions }
-                                </optgroup>
-                                <optgroup label="Other countries">
-                                    { this.state.countries }
-                                </optgroup>
-                            </select>
-                        </label>
+                    <label className="form-label">Country
+                        <select onChange={this.addToCommon} className="form-input" type="text" name="country" required placeholder="Your current location">
+                            <optgroup label="Common countries">
+                                { this.state.commonOptions }
+                            </optgroup>
+                            <optgroup label="Other countries">
+                                { this.state.countries }
+                            </optgroup>
+                        </select>
+                    </label>
 
-                        <label className="form-label">Email
-                            <input className="form-input" type="email" name="email" required placeholder="abc@mail.com" />
-                        </label>
+                    <label className="form-label">Email
+                        <input className="form-input" type="email" name="email" required placeholder="abc@mail.com" />
+                    </label>
 
-                        <label className="form-label">Password: 1 capital letter, 1 number, 4+ characters long.
-                            <input
-                                className="form-input password"
-                                type={this.state.hidden ? "password" : "text"}
-                                name="password"
-                                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{4,}"
-                                value={this.state.password}
-                                placeholder="Your password"
-                                onChange={this.onPasswordChange}
-                                required
-                                />
-                            <p><input type="checkbox" className="show-password" onClick={this.toggleShowPassword} /> {this.state.button ? "Show" : "Hide"} password</p>
-                        </label>
+                    <label className="form-label">Password: 1 capital letter, 1 number, 4+ characters long.
+                        <input
+                            className="form-input password"
+                            type={this.state.hidden ? "password" : "text"}
+                            name="password"
+                            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{4,}"
+                            value={this.state.password}
+                            placeholder="Your password"
+                            onChange={this.onPasswordChange}
+                            required
+                        />
+                        <p><input type="checkbox" className="show-password" onClick={this.toggleShowPassword} /> {this.state.button ? "Show" : "Hide"} password</p>
+                    </label>
 
-                        <label className="form-label">Password strength
-                            <meter className="form-meter" min="0" low="4" optimum="9" high="8" max="10" value={this.state.strength}></meter>
-                        </label>
+                    <label className="form-label">Password strength
+                        <meter className="form-meter" min="0" low="4" optimum="9" high="8" max="10" value={this.state.strength}></meter>
+                    </label>
 
-                        <label className="form-label check-label">
-                            <input className="check-input" type="checkbox" name="gdpr" required />
-                            I agree to the <a href="https://en.wikipedia.org/wiki/Terms_of_service">Terms and Conditions</a>
-                        </label><br />
+                    <label className="form-label check-label">
+                        <input className="check-input" type="checkbox" name="gdpr" required />
+                        I agree to the <a href="https://en.wikipedia.org/wiki/Terms_of_service">Terms and Conditions</a>
+                    </label><br />
 
 
-                        <input className="button form-button center" type="submit" name="register" value="Register" />
+                    <input className="button form-button center" type="submit" name="register" value="Register" />
                 </form>
             </div>
         );

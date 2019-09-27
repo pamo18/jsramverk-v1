@@ -1,4 +1,7 @@
+/*eslint max-len: ["error", { "code": 150 }]*/
+
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown/with-html';
 import base from '../../config/api.js';
@@ -7,6 +10,11 @@ let api = base.api();
 const json = require('../../assets/json/report.json');
 
 class Report extends Component {
+    static propTypes = {
+        match: PropTypes.object.isRequired,
+        location: PropTypes.object.isRequired,
+        history: PropTypes.object.isRequired
+    };
     constructor(props) {
         super(props);
         this.getContent = this.getContent.bind(this);
@@ -22,23 +30,24 @@ class Report extends Component {
         this.getContent(this.state.kmom);
     }
 
-    componentWillReceiveProps(newProps) {
+    // eslint-disable-next-line
+    UNSAFE_componentWillReceiveProps(newProps) {
         this.setState({
             kmom: newProps.match.params.kmom
-        }, () => this.getContent(this.state.kmom))
+        }, () => this.getContent(this.state.kmom));
     }
 
     getContent(kmom) {
         let report = kmom;
-        console.log(kmom);
+
         fetch(api + `/reports/week/${report}`)
-        .then(res => res.json())
-        .then(res => this.setState({
-            report: {
-                title: res.data.report.title,
-                content: res.data.report.content
-            }
-        }));
+            .then(res => res.json())
+            .then(res => this.setState({
+                report: {
+                    title: res.data.report.title,
+                    content: res.data.report.content
+                }
+            }));
     }
 
     render() {
@@ -55,12 +64,13 @@ class Report extends Component {
                         <li><NavLink to="/reports/week/10" activeClassName="selected">Kmom07-10</NavLink></li>
                     </ul>
                 </nav>
+                <h1>{ this.state.report.title }</h1>
                 <div>
                     <ReactMarkdown source={ this.state.report.content } escapeHtml={false} />
                 </div>
             </main>
         );
     }
-  }
+}
 
-  export default Report;
+export default Report;

@@ -1,3 +1,5 @@
+/*eslint max-len: ["error", { "code": 200 }]*/
+
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import logo from '../../assets/img/logo.jpg';
@@ -16,13 +18,14 @@ class Header extends Component {
     componentDidMount() {
         this.checkLogin();
         fetch(api)
-        .then(res => res.json())
-        .then(res => this.showContent(res))
+            .then(res => res.json())
+            .then(res => this.showContent(res));
     }
 
     showContent(res) {
         console.log(res);
         let data = res.data.me[0];
+
         this.setState({
             name: data.name,
             course: data.course
@@ -36,30 +39,37 @@ class Header extends Component {
             console.log("Admin menu");
             this.setState({
                 activeUser: [
-                    <nav className="navbar_main admin-nav">
+                    <nav className="navbar_main admin-nav" key="main-nav">
                         <ul>
                             <li><NavLink to="/reports/create" activeClassName="selected">Create</NavLink ></li>
                             <li><NavLink to="/reports/edit" activeClassName="selected">Edit</NavLink ></li>
                         </ul>
                     </nav>
                 ]
-            })
+            });
         }
     }
 
     render() {
         const checkActive = (match, location) => {
-            if(!location) return false;
-                const {pathname} = location;
+            if (!location) {
+                return false;
+            }
+            const {pathname} = location;
+
             return pathname === "/";
-        }
+        };
 
         const checkActiveReport = (match, location) => {
-            if(!location) return false;
-                const {pathname} = location;
-                var splitLink = pathname.split("/")[1];
+            if (!location) {
+                return false;
+            }
+            const {pathname} = location;
+            var splitLink = pathname.split("/")[1];
+
             return splitLink === "reports";
-        }
+        };
+
         return (
             <header className="site-header">
                 <img src={logo} className="logo" alt="logo" />

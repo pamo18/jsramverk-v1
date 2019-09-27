@@ -1,3 +1,5 @@
+/*eslint max-len: ["error", { "code": 120 }]*/
+
 import React, { Component } from 'react';
 import meSmallImage from '../../assets/img/Paul-Moreland.jpg';
 
