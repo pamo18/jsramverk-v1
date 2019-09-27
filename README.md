@@ -1,3 +1,11 @@
+## Badges
+
+[![Build Status](https://travis-ci.org/pamo18/pamo18.me.svg?branch=master)](https://travis-ci.org/pamo18/pamo18.me)
+
+## jsramverk, Express API
+
+Deployed at [https://pamo18.me/](https:pamo18.me/).
+
 Denna Me-sida är skapad av Paul Moreland och är en del av kursen jsramverk, Belinke Tekniska Högskola.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
