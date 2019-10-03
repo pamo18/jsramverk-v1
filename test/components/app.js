@@ -153,7 +153,7 @@ test.describe("Me-Sida", function() {
         // Check correct heading
         browser.findElement(By.css("h3")).then(function(element) {
             element.getText().then(function(text) {
-                assert.equal(text, "Name: doe");
+                assert.equal(text, "Username: doe");
             });
         });
 
