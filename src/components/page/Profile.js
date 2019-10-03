@@ -2,6 +2,10 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import base from '../../config/api.js';
+import io from 'socket.io-client';
+
+const socket = io(base.chat());
 
 class Profile extends Component {
     static propTypes = {
@@ -13,7 +17,8 @@ class Profile extends Component {
         super(props);
         this.logoff = this.logoff.bind(this);
         this.state = {
-            user: ""
+            user: "",
+            username: ""
         };
     }
     componentDidMount() {
@@ -21,6 +26,7 @@ class Profile extends Component {
     }
     logoff() {
         localStorage.clear();
+        socket.emit('log off', this.state.username);
         this.setState({
             user: ""
         });
@@ -36,7 +42,7 @@ class Profile extends Component {
             this.setState({
                 user: [
                     <div key="profile">
-                        <h3 className="center">Name: {profile.name}</h3>
+                        <h3 className="center">Username: {profile.name}</h3>
                         <h4 className="center">Birthday: {profile.birthday}</h4>
                         <h4 className="center">Country: {profile.country}</h4>
                         <h4 className="center">Email: {profile.email}</h4>
@@ -44,7 +50,8 @@ class Profile extends Component {
                             <button name="logoff" className="button center" onClick={this.logoff}>Logoff</button>
                         </p>
                     </div>
-                ]
+                ],
+                username: profile.name
             });
         } else {
             this.setState({

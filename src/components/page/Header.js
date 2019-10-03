@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import logo from '../../assets/img/logo.jpg';
 import base from '../../config/api.js';
+
 let api = base.api();
 
 class Header extends Component {
@@ -23,7 +24,6 @@ class Header extends Component {
     }
 
     showContent(res) {
-        console.log(res);
         let data = res.data.me[0];
 
         this.setState({
@@ -78,6 +78,7 @@ class Header extends Component {
                     <ul>
                         <li><NavLink to="/" activeClassName="selected" isActive={checkActive}>Me</NavLink ></li>
                         <li><NavLink to={{pathname: "/reports/week/1", state: { kmom: "1" }}} activeClassName="selected" isActive={checkActiveReport}>Redovisning</NavLink></li>
+                        <li><NavLink to="/chat" activeClassName="selected">Chat</NavLink ></li>
                         <li><NavLink to="/register" activeClassName="selected">Register</NavLink ></li>
                         <li><NavLink to="/login" activeClassName="selected">Login</NavLink ></li>
                         <li><NavLink to="/profile" activeClassName="selected">Profile</NavLink ></li>

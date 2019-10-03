@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import Header from '../page/Header.js';
 import Me from '../page/Me.js';
@@ -10,6 +10,7 @@ import Profile from '../page/Profile.js';
 import Footer from '../page/Footer.js';
 import Create from '../page/admin/Create.js';
 import Edit from '../page/admin/Edit.js';
+import Chat from '../socket/chat.js';
 
 import './App.css';
 
@@ -46,12 +47,15 @@ class App extends Component {
                     <Header />
                     <div className="wrap-main">
                         <main>
-                            <Route exact path="/" component={Me} />
-                            <Route path="/reports/week/:kmom" component={Report} />
-                            <Route exact path="/login" component={Login} />
-                            <Route exact path="/register" component={Register} />
-                            <Route exact path="/profile" component={Profile} />
-                            { this.state.activeUser }
+                            <Switch>
+                                <Route exact path="/" component={Me} />
+                                <Route path="/reports/week/:kmom" component={Report} />
+                                <Route exact path="/login" component={Login} />
+                                <Route exact path="/register" component={Register} />
+                                <Route exact path="/profile" component={Profile} />
+                                <Route exact path="/chat" component={Chat} />
+                                { this.state.activeUser }
+                            </Switch>
                         </main>
                     </div>
                     <Footer />

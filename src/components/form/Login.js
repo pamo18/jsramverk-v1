@@ -61,10 +61,10 @@ class Login extends Component {
             return (
                 <div className="form-wrapper">
                     <h1>Login</h1>
-                    <p className="center">To be able to edit reports you must first login.</p>
+                    <p className="center">To be able to access the chat and edit reports you must first login.</p>
                     <form action="/profile" className="form-register" onSubmit={this.registerSubmit}>
-                        <label className="form-label">Name
-                            <input className="form-input" type="text" name="name" required placeholder="Your name" />
+                        <label className="form-label">Username
+                            <input className="form-input" type="text" name="name" required placeholder="Your username" />
                         </label>
 
                         <label className="form-label">Password
