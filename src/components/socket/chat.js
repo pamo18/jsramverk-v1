@@ -1,4 +1,4 @@
-/*eslint max-len: ["error", { "code": 150 }]*/
+/*eslint max-len: ["error", { "code": 200 }]*/
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
@@ -16,9 +16,13 @@ class Chat extends Component {
     constructor(props) {
         super(props);
         this.updateConversation = this.updateConversation.bind(this);
+        this.saveConversation = this.saveConversation.bind(this);
+        this.adminConversations = this.adminConversations.bind(this);
         this.newMessage = this.newMessage.bind(this);
         this.state = {
             conversation: [],
+            conversationData: "",
+            savedConversations: [],
             users: "",
             username: ""
         };
@@ -26,7 +30,7 @@ class Chat extends Component {
 
     componentDidMount() {
         this.startChat();
-        socket.emit('restore conversation');
+        socket.emit('resume conversation');
         if (localStorage.getItem("activeUser")) {
             let user = localStorage.getItem("activeUser"),
                 profile = [];
@@ -34,7 +38,7 @@ class Chat extends Component {
             profile = JSON.parse(user);
             this.setState({
                 username: profile.name
-            }, () => socket.emit('update users', this.state.username));
+            }, () => socket.emit('user joined', profile.name), socket.emit('get conversations'));
         } else {
             this.props.history.push('/login');
         }
@@ -51,21 +55,7 @@ class Chat extends Component {
             console.info("Disconnected from chat");
         });
 
-        socket.on('chat message', function (conversation) {
-            that.updateConversation(conversation);
-        });
-
-        socket.on('restore conversation', function (conversation) {
-            that.updateConversation(conversation);
-        });
-
-        socket.on('clear conversation', function () {
-            that.setState({
-                conversation: []
-            });
-        });
-
-        socket.on('update users', function (users) {
+        socket.on('current users', function (users) {
             let currentUsers = [],
                 currentConversation = that.state.conversation;
 
@@ -77,13 +67,13 @@ class Chat extends Component {
             if (users.new) {
                 currentConversation.push(
                     <div className="chat-container message" key={users.new}>
-                        <p className="newUser center">{ users.new } has joined the conversation.</p>
+                        <p className="newUser center">{ users.new } has connected.</p>
                     </div>
                 );
             } else if (users.left) {
                 currentConversation.push(
                     <div className="chat-container message" key={users.left}>
-                        <p className="oldUser center">{ users.left } has left the conversation.</p>
+                        <p className="oldUser center">{ users.left } has disconnected.</p>
                     </div>
                 );
             }
@@ -93,6 +83,48 @@ class Chat extends Component {
                 conversation: currentConversation
             });
         });
+
+        socket.on('new message', function (conversation) {
+            that.updateConversation(conversation);
+        });
+
+        socket.on('current conversation', function (conversation) {
+            that.updateConversation(conversation);
+        });
+
+        socket.on('new conversation', function (conversation) {
+            that.setState({
+                conversation: conversation
+            });
+        });
+
+        socket.on('show conversations', function (savedConversations) {
+            let saved = [];
+
+            savedConversations.map(function (conversation) {
+                let time = conversation.timestamp;
+
+                saved.push(<option key={time} value={time}>{time}</option>);
+                return true;
+            });
+            that.setState({
+                savedConversations: saved
+            });
+        });
+    }
+
+    newMessage(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            socket.emit('chat message', {
+                user: this.state.username,
+                text: e.target.value
+            });
+            e.target.value = "";
+            this.setState({
+                last: e.target.value
+            });
+        }
     }
 
     updateConversation(conversation) {
@@ -114,7 +146,8 @@ class Chat extends Component {
             return true;
         });
         this.setState({
-            conversation: currentConversation
+            conversation: currentConversation,
+            conversationData: conversation
         });
     }
 
@@ -122,17 +155,24 @@ class Chat extends Component {
         socket.emit('clear conversation');
     }
 
-    newMessage(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            socket.emit('chat message', {
-                user: this.state.username,
-                text: e.target.value
-            });
-            e.target.value = "";
-            this.setState({
-                last: e.target.value
-            });
+    saveConversation() {
+        let currentConversation = this.state.conversation;
+
+        socket.emit('save conversation', this.state.username);
+        currentConversation.push(
+            <div className="chat-container message saved" key={"saved"}>
+                <p className="center">Chat saved!</p>
+            </div>
+        );
+    }
+
+    adminConversations(e) {
+        const data = new FormData(e.target);
+
+        if (this.state.action === "restore") {
+            socket.emit('restore conversation', data.get('timestamp'));
+        } else if (this.state.action === "delete") {
+            socket.emit('delete conversation', data.get('timestamp'));
         }
     }
 
@@ -140,8 +180,17 @@ class Chat extends Component {
         return (
             <article>
                 <h1>Chat</h1>
-                <button className="button chat right" onClick={this.clearConversation}>Clear chat</button>
-                <h4>Connected users:</h4>
+                <form className="chat-admin" onSubmit={this.adminConversations}>
+                    <select name="timestamp" required>
+                        <option disabled selected value="">Choose restore point</option>
+                        { this.state.savedConversations }
+                    </select>
+                    <div className="admin-buttons">
+                        <button className="button restore" type="submit" onClick={() => this.setState({action: "restore"})}>Restore chat</button>
+                        <button className="button delete" type="submit" onClick={() => this.setState({action: "delete"})}>Delete chat</button>
+                    </div>
+                </form>
+                <h4 className="users">Connected users:</h4>
                 <ol>
                     { this.state.users }
                 </ol>
@@ -153,6 +202,10 @@ class Chat extends Component {
                     onKeyDown={ this.newMessage }
                     placeholder="Start chatting, press enter send message."
                 />
+                <div className="chat-buttons">
+                    <button className="button save" onClick={this.saveConversation}>Save chat</button>
+                    <button className="button clear" onClick={() => {if (window.confirm('Clear the chat?')) {this.clearConversation();}}}>Clear chat</button>
+                </div>
             </article>
         );
     }

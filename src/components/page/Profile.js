@@ -26,7 +26,7 @@ class Profile extends Component {
     }
     logoff() {
         localStorage.clear();
-        socket.emit('log off', this.state.username);
+        socket.emit('user left', this.state.username);
         this.setState({
             user: ""
         });

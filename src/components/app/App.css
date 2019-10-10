@@ -55,6 +55,11 @@ pre {
     color: white;
 }
 
+.chat-container.saved {
+    background-color: green;
+    color: white;
+}
+
 @keyframes slide-up {
     0% {
         opacity: 0;
@@ -84,10 +89,6 @@ pre {
 .chat-container .me-user {
     color: blue;
 }
-
-/* .chat-container .user::after {
-    content: " ->";
-} */
 
 .time-left {
     float: right;
@@ -176,14 +177,45 @@ pre {
     background-color: green;
 }
 
-.button.chat {
-    float: right;
-    font-size: 0.9rem;
-    width: 7em;
-}
-
 .form-input.password {
     margin-bottom: 0.25rem;
+}
+
+.chat-admin,
+.chat-buttons {
+    width: 22rem;
+    margin: 0 auto;
+}
+
+.chat-admin select,
+.chat-admin .admin-buttons {
+    width: 100%;
+}
+
+.chat-admin select {
+    margin-bottom: 0.5rem;
+}
+
+.chat-admin .restore,
+.chat-admin .delete,
+.chat-buttons .clear,
+.chat-buttons .save {
+    font-size: 0.9rem;
+}
+
+.chat-admin .restore,
+.chat-buttons .save {
+    float: left;
+}
+
+.chat-admin .delete,
+.chat-buttons .clear {
+    float: right;
+}
+
+.users {
+    clear: both;
+    padding-top: 1rem;
 }
 
 .site-header {
@@ -395,6 +427,18 @@ textarea {
     .form-meter,
     .date-picker {
         width: 24rem;
+    }
+
+    .chat-admin {
+        float: left;
+    }
+
+    .chat-buttons {
+        float: right;
+    }
+
+    .users {
+        margin-top: 0;
     }
 }
 
